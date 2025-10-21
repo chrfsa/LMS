@@ -6,6 +6,7 @@ import authRoutes from './routes/auth';
 import progressRoutes from './routes/progress';
 import quizRoutes from './routes/quiz';
 import certificateRoutes from './routes/certificate';
+import modulesRoutes from './routes/modules';
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -28,6 +29,7 @@ app.use('/auth', authRoutes);
 app.use('/progress', progressRoutes);
 app.use('/quiz', quizRoutes);
 app.use('/certificate', certificateRoutes);
+app.use('/modules', modulesRoutes);
 
 app.listen(PORT, () => {
   console.log(`[API] listening on :${PORT}`);

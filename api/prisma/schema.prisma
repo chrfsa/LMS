@@ -14,26 +14,84 @@ enum ProgressStatus {
 }
 
 model User {
-  id        Int       @id @default(autoincrement())
-  email     String    @unique
+  id        Int        @id @default(autoincrement())
+  email     String     @unique
   password  String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
   progress  Progress[]
 }
 
-model Progress {
-  id         Int             @id @default(autoincrement())
-  userId     Int
-  moduleId   Int
-  status     ProgressStatus
-  quizScore  Int?
-  validated  Boolean         @default(false)
-  createdAt  DateTime        @default(now())
-  updatedAt  DateTime        @updatedAt
+model Course {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String?
+  slug        String   @unique
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  modules     Module[]
+}
 
-  user       User            @relation(fields: [userId], references: [id])
+model Module {
+  id          Int        @id @default(autoincrement())
+  courseId    Int
+  order       Int
+  title       String
+  youtubeId   String
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  
+  course      Course     @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  questions   Question[]
+  progress    Progress[]
+  
+  @@unique([courseId, order])
+  @@index([courseId])
+}
+
+model Question {
+  id          Int      @id @default(autoincrement())
+  moduleId    Int
+  order       Int
+  text        String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  module      Module   @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  options     Option[]
+  
+  @@unique([moduleId, order])
+  @@index([moduleId])
+}
+
+model Option {
+  id          Int      @id @default(autoincrement())
+  questionId  Int
+  order       Int
+  text        String
+  isCorrect   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  question    Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  
+  @@index([questionId])
+}
+
+model Progress {
+  id        Int            @id @default(autoincrement())
+  userId    Int
+  moduleId  Int
+  status    ProgressStatus @default(in_progress)
+  quizScore Int?
+  validated Boolean        @default(false)
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  module Module @relation(fields: [moduleId], references: [id], onDelete: Cascade)
 
   @@unique([userId, moduleId])
   @@index([userId])
+  @@index([moduleId])
 }

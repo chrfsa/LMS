@@ -35,16 +35,25 @@ router.post('/register', async (req, res) => {
     
     console.log('[DB] User created:', user.id);
     
-    // Initialize progress for all 3 modules
-    await prisma.progress.createMany({
-      data: [
-        { userId: user.id, moduleId: 1, status: 'in_progress', validated: false },
-        { userId: user.id, moduleId: 2, status: 'in_progress', validated: false },
-        { userId: user.id, moduleId: 3, status: 'in_progress', validated: false },
-      ],
+    // Initialize progress for all modules in the default course (slug: 'cursor')
+    const defaultCourse = await prisma.course.findUnique({
+      where: { slug: 'cursor' },
+      include: { modules: true },
     });
     
-    console.log('[PROGRESS] Initialized progress for user:', user.id);
+    if (defaultCourse && defaultCourse.modules.length > 0) {
+      await prisma.progress.createMany({
+        data: defaultCourse.modules.map(module => ({
+          userId: user.id,
+          moduleId: module.id,
+          status: 'in_progress' as const,
+          validated: false,
+        })),
+      });
+      console.log('[PROGRESS] Initialized progress for', defaultCourse.modules.length, 'modules');
+    }
+    
+    console.log('[PROGRESS] Progress initialized for user:', user.id);
     
     // Generate token
     const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '7d' });

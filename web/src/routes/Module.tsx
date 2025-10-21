@@ -2,17 +2,21 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { api } from '../api';
 import { Progress } from '../types';
-import { MODULES } from '../constants';
 import { YouTubeEmbed } from '../components/YouTubeEmbed';
 import { Quiz } from '../components/Quiz';
 import { Card } from '../components/Card';
+import { useModule } from '../hooks/useModules';
 
 export function Module() {
   const { id } = useParams<{ id: string }>();
   const moduleId = parseInt(id || '0');
   const navigate = useNavigate();
+  
+  const { module, loading: moduleLoading } = useModule(moduleId);
+  const [moduleProgress, setModuleProgress] = useState<Progress | null>(null);
   const [progress, setProgress] = useState<Progress[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     loadProgress();
@@ -24,52 +28,53 @@ export function Module() {
       const response = await api.get('/progress');
       setProgress(response.data);
       
-      const moduleProgress = response.data.find((p: Progress) => p.moduleId === moduleId);
-      if (!moduleProgress?.unlocked) {
+      const currentModuleProgress = response.data.find((p: Progress) => p.moduleId === moduleId);
+      if (!currentModuleProgress?.unlocked) {
         console.log('[NAV] Module not unlocked, redirecting to dashboard');
         navigate('/');
+        return;
       }
+      setModuleProgress(currentModuleProgress);
     } catch (err) {
       console.error('[PROGRESS] Error loading progress:', err);
+      setError('Erreur lors du chargement');
       navigate('/');
     } finally {
       setLoading(false);
     }
   };
 
-  // Calculer le nombre total de modules
   const totalModules = progress.length || 3;
 
   const handleQuizSuccess = () => {
     console.log('[QUIZ] Quiz validated, refreshing progress');
     
-    if (moduleId === 3) {
-      console.log('[NAV] Module 3 completed, redirecting to final');
+    const currentIndex = progress.findIndex(p => p.moduleId === moduleId);
+    const isLastModule = currentIndex === progress.length - 1;
+
+    if (isLastModule) {
+      console.log('[NAV] Last module completed, redirecting to final');
       setTimeout(() => navigate('/final'), 2000);
     } else {
-      // Passer automatiquement au module suivant
-      const nextModuleId = moduleId + 1;
-      console.log('[NAV] Navigating to next module:', nextModuleId);
-      setTimeout(() => navigate(`/module/${nextModuleId}`), 2000);
+      const nextModule = progress[currentIndex + 1];
+      console.log('[NAV] Navigating to next module:', nextModule.moduleId);
+      setTimeout(() => navigate(`/module/${nextModule.moduleId}`), 2000);
     }
   };
 
-  if (loading) {
+  if (loading || moduleLoading) {
     return (
-      <div className="max-w-4xl mx-auto p-6">
+      <div className="max-w-4xl mx-auto p-4 sm:p-6">
         <div className="text-center text-gray-400">Chargement...</div>
       </div>
     );
   }
 
-  const module = MODULES[moduleId as 1 | 2 | 3];
-  const moduleProgress = progress.find((p) => p.moduleId === moduleId);
-
-  if (!module || !moduleProgress) {
+  if (error || !module || !moduleProgress) {
     return (
-      <div className="max-w-4xl mx-auto p-6">
-        <Card className="bg-red-500/10 border-red-500/30">
-          <p className="text-red-400">Module introuvable</p>
+      <div className="max-w-4xl mx-auto p-4 sm:p-6">
+        <Card className="bg-red-500/10 border border-red-500/30">
+          <p className="text-red-400">{error || 'Module introuvable'}</p>
         </Card>
       </div>
     );
