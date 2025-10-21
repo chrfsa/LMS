@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { api } from '../api';
 import { Progress } from '../types';
 import { MODULES } from '../constants';
@@ -78,7 +78,15 @@ export function Module() {
   return (
     <div className="max-w-4xl mx-auto p-6">
       <div className="mb-6">
-        <div className="flex items-center justify-between">
+        <Link 
+          to="/" 
+          className="inline-flex items-center text-vibeen-accent hover:text-vibeen-accent/80 transition-colors mb-4"
+        >
+          <span className="mr-2">←</span>
+          Retour au parcours
+        </Link>
+        
+        <div className="flex items-center justify-between mt-4">
           <div className="text-sm text-gray-400">
             Module {moduleProgress.moduleId} / {totalModules}
           </div>
