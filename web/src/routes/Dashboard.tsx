@@ -105,6 +105,16 @@ export function Dashboard() {
           </div>
         </div>
 
+        {/* Description du parcours */}
+        <div className="mb-6 p-4 bg-gray-800/50 rounded-lg">
+          <p className="text-gray-300 text-sm leading-relaxed">
+            🎓 <strong>À propos de ce parcours :</strong><br/>
+            Découvrez les fondamentaux du Vibeenengineering à travers {totalModules} modules progressifs. 
+            Chaque module contient une vidéo et un quiz de validation. 
+            {!isCompleted && ' Validez chaque quiz pour débloquer le module suivant.'}
+          </p>
+        </div>
+
         {/* Bouton principal */}
         <Button
           onClick={handleContinue}
@@ -113,89 +123,6 @@ export function Dashboard() {
           {isCompleted ? '🎉 Voir ma certification' : currentModule?.moduleId === 1 ? '🚀 Commencer le parcours' : `📚 Continuer - Module ${currentModule?.moduleId}`}
         </Button>
       </Card>
-
-      {/* Liste des modules avec leur statut */}
-      <div className="space-y-4">
-        <h3 className="text-lg font-semibold text-gray-300">Modules du parcours</h3>
-        {progress.map((p, index) => {
-          const module = MODULES[p.moduleId as 1 | 2 | 3];
-          const isCurrent = !isCompleted && p.moduleId === currentModule?.moduleId;
-          
-          return (
-            <Card
-              key={p.moduleId}
-              className={`transition-all ${
-                isCurrent ? 'border-vibeen-accent shadow-lg shadow-vibeen-accent/20' : ''
-              } ${!p.unlocked ? 'opacity-50' : ''}`}
-            >
-              <div className="flex items-center gap-4">
-                {/* Numéro du module */}
-                <div
-                  className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg ${
-                    p.validated
-                      ? 'bg-green-500/20 text-green-400'
-                      : isCurrent
-                      ? 'bg-vibeen-accent/20 text-vibeen-accent'
-                      : 'bg-gray-800 text-gray-500'
-                  }`}
-                >
-                  {p.validated ? '✓' : p.moduleId}
-                </div>
-
-                {/* Infos du module */}
-                <div className="flex-1">
-                  <h4 className="font-semibold text-gray-100 mb-1">
-                    {module.title}
-                  </h4>
-                  <div className="flex items-center gap-3">
-                    <span
-                      className={`text-xs px-2 py-1 rounded ${
-                        p.validated
-                          ? 'bg-green-500/20 text-green-400'
-                          : p.unlocked
-                          ? 'bg-yellow-500/20 text-yellow-400'
-                          : 'bg-gray-700 text-gray-500'
-                      }`}
-                    >
-                      {p.validated ? 'Validé' : p.unlocked ? 'En cours' : 'Verrouillé'}
-                    </span>
-                    {p.quizScore !== null && (
-                      <span className="text-xs text-gray-400">
-                        Quiz: {p.quizScore}/3
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                {/* Bouton d'accès */}
-                {p.unlocked && (
-                  <Button
-                    variant={isCurrent ? 'primary' : 'secondary'}
-                    onClick={() => navigate(`/module/${p.moduleId}`)}
-                    className="text-sm"
-                  >
-                    {p.validated ? 'Revoir' : 'Accéder'}
-                  </Button>
-                )}
-                {!p.unlocked && (
-                  <div className="px-4 py-2 rounded-lg bg-gray-800 text-gray-500 text-sm">
-                    🔒 Verrouillé
-                  </div>
-                )}
-              </div>
-            </Card>
-          );
-        })}
-      </div>
-
-      {/* Message de motivation */}
-      {!isCompleted && (
-        <Card className="mt-6 bg-vibeen-accent/5 border-vibeen-accent/20">
-          <p className="text-center text-gray-300">
-            💡 <strong>Astuce:</strong> Valide chaque quiz avec un score de 3/3 pour débloquer le module suivant
-          </p>
-        </Card>
-      )}
     </div>
   );
 }

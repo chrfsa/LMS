@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { api } from '../api';
 import { Progress } from '../types';
 import { MODULES } from '../constants';
@@ -39,11 +39,15 @@ export function Module() {
 
   const handleQuizSuccess = () => {
     console.log('[QUIZ] Quiz validated, refreshing progress');
-    loadProgress();
     
     if (moduleId === 3) {
       console.log('[NAV] Module 3 completed, redirecting to final');
       setTimeout(() => navigate('/final'), 2000);
+    } else {
+      // Passer automatiquement au module suivant
+      const nextModuleId = moduleId + 1;
+      console.log('[NAV] Navigating to next module:', nextModuleId);
+      setTimeout(() => navigate(`/module/${nextModuleId}`), 2000);
     }
   };
 
@@ -71,29 +75,28 @@ export function Module() {
   return (
     <div className="max-w-4xl mx-auto p-6">
       <div className="mb-6">
-        <Link to="/" className="text-vibeen-accent hover:underline text-sm">
-          ← Retour au Dashboard
-        </Link>
-      </div>
-
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold mb-2">{module.title}</h1>
-        <div className="flex items-center gap-3">
-          <span
-            className={`px-3 py-1 rounded-full text-sm font-medium ${
-              moduleProgress.status === 'done'
-                ? 'bg-green-500/20 text-green-400'
-                : 'bg-yellow-500/20 text-yellow-400'
-            }`}
-          >
-            {moduleProgress.status === 'done' ? 'Done' : 'En cours'}
-          </span>
-          {moduleProgress.quizScore !== null && (
-            <span className="text-gray-400 text-sm">
-              Score: {moduleProgress.quizScore}/3
+        <div className="flex items-center justify-between">
+          <div className="text-sm text-gray-400">
+            Module {moduleProgress.moduleId} / {totalModules}
+          </div>
+          <div className="flex items-center gap-2">
+            {moduleProgress.quizScore !== null && (
+              <span className="text-gray-400 text-sm">
+                Score: {moduleProgress.quizScore}/3
+              </span>
+            )}
+            <span
+              className={`px-3 py-1 rounded-full text-sm font-medium ${
+                moduleProgress.status === 'done'
+                  ? 'bg-green-500/20 text-green-400'
+                  : 'bg-yellow-500/20 text-yellow-400'
+              }`}
+            >
+              {moduleProgress.status === 'done' ? 'Validé' : 'En cours'}
             </span>
-          )}
+          </div>
         </div>
+        <h1 className="text-3xl font-bold mt-4">{module.title}</h1>
       </div>
 
       <div className="space-y-8">
