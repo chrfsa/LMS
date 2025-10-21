@@ -4,6 +4,8 @@ RUN apk add --no-cache curl
 COPY package*.json ./
 RUN npm install
 COPY tsconfig.json ./
+COPY prisma ./prisma
+RUN npx prisma generate || true
 COPY src ./src
 EXPOSE 4000
 CMD ["npm","run","dev"]

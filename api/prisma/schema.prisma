@@ -1,0 +1,38 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ProgressStatus {
+  in_progress
+  done
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
+  password  String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  progress  Progress[]
+}
+
+model Progress {
+  id         Int             @id @default(autoincrement())
+  userId     Int
+  moduleId   Int
+  status     ProgressStatus
+  quizScore  Int?
+  validated  Boolean         @default(false)
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
+
+  user       User            @relation(fields: [userId], references: [id])
+
+  @@unique([userId, moduleId])
+  @@index([userId])
+}
