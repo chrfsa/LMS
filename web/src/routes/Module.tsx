@@ -76,28 +76,28 @@ export function Module() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
+    <div className="max-w-4xl mx-auto p-4 sm:p-6">
       <div className="mb-6">
         <Link 
           to="/" 
-          className="inline-flex items-center text-vibeen-accent hover:text-vibeen-accent/80 transition-colors mb-4"
+          className="inline-flex items-center text-vibeen-accent hover:text-vibeen-accent/80 transition-colors mb-4 text-sm sm:text-base"
         >
           <span className="mr-2">←</span>
           Retour au parcours
         </Link>
         
-        <div className="flex items-center justify-between mt-4">
-          <div className="text-sm text-gray-400">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mt-4">
+          <div className="text-xs sm:text-sm text-gray-400">
             Module {moduleProgress.moduleId} / {totalModules}
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             {moduleProgress.quizScore !== null && (
-              <span className="text-gray-400 text-sm">
+              <span className="text-gray-400 text-xs sm:text-sm">
                 Score: {moduleProgress.quizScore}/3
               </span>
             )}
             <span
-              className={`px-3 py-1 rounded-full text-sm font-medium ${
+              className={`px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium ${
                 moduleProgress.status === 'done'
                   ? 'bg-green-500/20 text-green-400'
                   : 'bg-yellow-500/20 text-yellow-400'
@@ -107,12 +107,12 @@ export function Module() {
             </span>
           </div>
         </div>
-        <h1 className="text-3xl font-bold mt-4">{module.title}</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold mt-4">{module.title}</h1>
       </div>
 
-      <div className="space-y-8">
+      <div className="space-y-6 sm:space-y-8">
         <div>
-          <h2 className="text-xl font-semibold mb-4">Vidéo</h2>
+          <h2 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4">Vidéo</h2>
           <YouTubeEmbed videoId={module.youtubeId} />
         </div>
 

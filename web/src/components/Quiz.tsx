@@ -79,24 +79,24 @@ export function Quiz({ moduleId, isValidated, onSuccess }: QuizProps) {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold">Quiz de validation</h2>
-        <span className="text-sm text-gray-400">
+    <div className="space-y-4 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+        <h2 className="text-xl sm:text-2xl font-bold">Quiz de validation</h2>
+        <span className="text-xs sm:text-sm text-gray-400">
           {questions.length} questions
         </span>
       </div>
 
       {questions.map((q, qIndex) => (
         <Card key={qIndex}>
-          <p className="font-medium mb-4">
+          <p className="font-medium mb-3 sm:mb-4 text-sm sm:text-base">
             {qIndex + 1}. {q.question}
           </p>
           <div className="space-y-2">
             {q.options.map((option, oIndex) => (
               <label
                 key={oIndex}
-                className={`flex items-center p-3 rounded-lg border cursor-pointer transition-all ${
+                className={`flex items-start p-2.5 sm:p-3 rounded-lg border cursor-pointer transition-all ${
                   answers[qIndex] === oIndex
                     ? 'border-vibeen-accent bg-vibeen-accent/10'
                     : 'border-gray-700 hover:border-gray-600'
@@ -114,9 +114,9 @@ export function Quiz({ moduleId, isValidated, onSuccess }: QuizProps) {
                     setError('');
                     setResult(null);
                   }}
-                  className="mr-3"
+                  className="mr-2 sm:mr-3 mt-0.5 flex-shrink-0"
                 />
-                <span className="text-gray-200">{option}</span>
+                <span className="text-gray-200 text-sm sm:text-base">{option}</span>
               </label>
             ))}
           </div>

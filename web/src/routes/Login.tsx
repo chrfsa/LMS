@@ -48,11 +48,11 @@ export function Login() {
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
       <Card className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-vibeen-accent to-vibeen-purple bg-clip-text text-transparent mb-2">
+        <div className="text-center mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-vibeen-accent to-vibeen-purple bg-clip-text text-transparent mb-2">
             Vibeenengineer LMS
           </h1>
-          <p className="text-gray-400">
+          <p className="text-sm sm:text-base text-gray-400">
             {mode === 'login' ? 'Connectez-vous pour continuer' : 'Créez votre compte'}
           </p>
         </div>
@@ -82,12 +82,12 @@ export function Login() {
             </div>
           )}
 
-          <div className="flex gap-2">
+          <div className="flex flex-col sm:flex-row gap-2">
             <Button
               type="submit"
               variant={mode === 'login' ? 'primary' : 'secondary'}
               disabled={loading}
-              className="flex-1"
+              className="flex-1 text-sm sm:text-base"
             >
               {loading ? 'Chargement...' : mode === 'login' ? 'Se connecter' : 'Créer un compte'}
             </Button>
@@ -99,14 +99,14 @@ export function Login() {
                 setError('');
               }}
               disabled={loading}
-              className="flex-1"
+              className="flex-1 text-sm sm:text-base"
             >
               {mode === 'login' ? 'Créer un compte' : 'Se connecter'}
             </Button>
           </div>
         </form>
 
-        <div className="mt-6 text-center text-xs text-gray-500">
+        <div className="mt-4 sm:mt-6 text-center text-xs text-gray-500">
           <p>Email: regex simple • Mot de passe: min 5 caractères</p>
         </div>
       </Card>
