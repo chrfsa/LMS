@@ -1,13 +1,41 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../api';
 import { Button } from '../components/Button';
 import { Card } from '../components/Card';
+import { FeedbackForm, FeedbackData } from '../components/FeedbackForm';
 
 export function Final() {
   const navigate = useNavigate();
   const [resetting, setResetting] = useState(false);
   const [downloading, setDownloading] = useState(false);
+  const [feedback, setFeedback] = useState<FeedbackData | null>(null);
+  const [loadingFeedback, setLoadingFeedback] = useState(true);
+
+  useEffect(() => {
+    loadFeedback();
+  }, []);
+
+  const loadFeedback = async () => {
+    try {
+      console.log('[FEEDBACK] Loading existing feedback');
+      const response = await api.get('/feedback');
+      if (response.data) {
+        setFeedback(response.data);
+        console.log('[FEEDBACK] Feedback loaded:', response.data);
+      }
+    } catch (err) {
+      console.error('[FEEDBACK] Error loading feedback:', err);
+    } finally {
+      setLoadingFeedback(false);
+    }
+  };
+
+  const handleFeedbackSubmit = async (feedbackData: FeedbackData) => {
+    console.log('[FEEDBACK] Submitting feedback:', feedbackData);
+    await api.post('/feedback', feedbackData);
+    setFeedback(feedbackData);
+  };
 
   const handleReset = async () => {
     setResetting(true);
@@ -53,53 +81,64 @@ export function Final() {
   };
 
   return (
-    <div className="min-h-[calc(100vh-80px)] flex items-center justify-center p-4 sm:p-6">
-      <Card className="max-w-2xl w-full text-center space-y-4 sm:space-y-6">
-        <div className="text-5xl sm:text-6xl mb-2 sm:mb-4">🎉</div>
-        
-        <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-vibeen-accent to-vibeen-purple bg-clip-text text-transparent px-2">
-          Félicitations !
-        </h1>
-        
-        <p className="text-lg sm:text-xl text-gray-300 px-2">
-          Bravo, tu es maintenant <span className="font-bold text-vibeen-accent">Vibenengineer Certified</span> !
-        </p>
-        
-        <p className="text-sm sm:text-base text-gray-400 px-2">
-          Tu as complété les 3 modules avec succès et validé tous les quiz.
-          Continue à vibrer avec cette énergie !
-        </p>
-
-        <div className="bg-vibeen-accent/10 border border-vibeen-accent/30 rounded-lg p-4 sm:p-6 mx-2">
-          <p className="text-sm sm:text-base text-gray-300 mb-4">
-            🎓 Télécharge ton certificat officiel Vibeenengineer !
+    <div className="min-h-[calc(100vh-80px)] p-4 sm:p-6">
+      <div className="max-w-2xl mx-auto space-y-6">
+        {/* Congratulations Card */}
+        <Card className="text-center space-y-4 sm:space-y-6">
+          <div className="text-5xl sm:text-6xl mb-2 sm:mb-4">🎉</div>
+          
+          <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-vibeen-accent to-vibeen-purple bg-clip-text text-transparent px-2">
+            Félicitations !
+          </h1>
+          
+          <p className="text-lg sm:text-xl text-gray-300 px-2">
+            Bravo, tu es maintenant <span className="font-bold text-vibeen-accent">Vibenengineer Certified</span> !
           </p>
-          <Button
-            onClick={handleDownloadCertificate}
-            disabled={downloading}
-            className="w-full bg-gradient-to-r from-vibeen-accent to-vibeen-purple hover:opacity-90"
-          >
-            {downloading ? '📄 Génération en cours...' : '📥 Télécharger mon certificat'}
-          </Button>
-        </div>
+          
+          <p className="text-sm sm:text-base text-gray-400 px-2">
+            Tu as complété les 3 modules avec succès et validé tous les quiz.
+            Continue à vibrer avec cette énergie !
+          </p>
 
-        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center pt-2 sm:pt-4">
-          <Button
-            variant="secondary"
-            onClick={() => navigate('/')}
-            className="w-full sm:w-auto"
-          >
-            Retour Dashboard
-          </Button>
-          <Button
-            onClick={handleReset}
-            disabled={resetting}
-            className="w-full sm:w-auto"
-          >
-            {resetting ? 'Réinitialisation...' : 'Recommencer'}
-          </Button>
-        </div>
-      </Card>
+          <div className="bg-vibeen-accent/10 border border-vibeen-accent/30 rounded-lg p-4 sm:p-6 mx-2">
+            <p className="text-sm sm:text-base text-gray-300 mb-4">
+              🎓 Télécharge ton certificat officiel Vibeenengineer !
+            </p>
+            <Button
+              onClick={handleDownloadCertificate}
+              disabled={downloading}
+              className="w-full bg-gradient-to-r from-vibeen-accent to-vibeen-purple hover:opacity-90"
+            >
+              {downloading ? '📄 Génération en cours...' : '📥 Télécharger mon certificat'}
+            </Button>
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center pt-2 sm:pt-4">
+            <Button
+              variant="secondary"
+              onClick={() => navigate('/')}
+              className="w-full sm:w-auto"
+            >
+              Retour Dashboard
+            </Button>
+            <Button
+              onClick={handleReset}
+              disabled={resetting}
+              className="w-full sm:w-auto"
+            >
+              {resetting ? 'Réinitialisation...' : 'Recommencer'}
+            </Button>
+          </div>
+        </Card>
+
+        {/* Feedback Section */}
+        {!loadingFeedback && (
+          <FeedbackForm
+            onSubmit={handleFeedbackSubmit}
+            initialData={feedback}
+          />
+        )}
+      </div>
     </div>
   );
 }
