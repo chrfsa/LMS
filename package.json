@@ -1,0 +1,38 @@
+{
+  "name": "vibeenengineer-lms",
+  "version": "1.0.0",
+  "description": "A modern Learning Management System with React, Node.js, and PostgreSQL",
+  "private": true,
+  "scripts": {
+    "build": "npm run build:api && npm run build:web",
+    "build:api": "cd api && npm install && npm run build",
+    "build:web": "cd web && npm install && npm run build",
+    "dev": "docker compose up",
+    "dev:build": "docker compose up --build",
+    "down": "docker compose down",
+    "down:volumes": "docker compose down -v",
+    "logs": "docker compose logs -f",
+    "logs:api": "docker compose logs -f api",
+    "logs:web": "docker compose logs -f web",
+    "logs:db": "docker compose logs -f db",
+    "prisma:studio": "docker compose exec api npx prisma studio",
+    "prisma:migrate": "docker compose exec api npx prisma migrate dev",
+    "prisma:reset": "docker compose exec api npx prisma migrate reset --force",
+    "prisma:seed": "docker compose exec api npm run prisma:seed",
+    "test:api": "curl http://localhost:4000/health",
+    "clean": "rm -rf api/dist web/dist api/node_modules web/node_modules"
+  },
+  "keywords": [
+    "lms",
+    "learning",
+    "react",
+    "nodejs",
+    "typescript",
+    "prisma",
+    "postgresql",
+    "docker"
+  ],
+  "author": "Vibeenengineer",
+  "license": "MIT"
+}
+
