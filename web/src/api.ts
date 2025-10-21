@@ -11,6 +11,10 @@ api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
+    console.log(`[API] 🔐 Sending request to ${config.method?.toUpperCase()} ${config.url} with JWT`);
+    console.log(`[API] 🔑 Token: ${token.substring(0, 20)}...`);
+  } else {
+    console.log(`[API] 📤 Sending request to ${config.method?.toUpperCase()} ${config.url} (no auth)`);
   }
   return config;
 });

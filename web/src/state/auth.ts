@@ -43,6 +43,8 @@ export async function register(data: RegisterData) {
   localStorage.setItem('user', JSON.stringify(response.data.user));
   notify();
   console.log('[AUTH] Registration successful');
+  console.log('[AUTH] 🔑 JWT Token:', response.data.token);
+  console.log('[AUTH] 📦 Token stored in localStorage');
   return response.data;
 }
 
@@ -57,6 +59,8 @@ export async function login(data: LoginData) {
   localStorage.setItem('user', JSON.stringify(response.data.user));
   notify();
   console.log('[AUTH] Login successful');
+  console.log('[AUTH] 🔑 JWT Token:', response.data.token);
+  console.log('[AUTH] 📦 Token stored in localStorage');
   return response.data;
 }
 
@@ -79,10 +83,13 @@ export function logout() {
 
 // Initialize user from localStorage if token exists
 if (authState.token) {
+  console.log('[AUTH] 🔄 Restoring session from localStorage');
+  console.log('[AUTH] 🔑 JWT Token:', authState.token);
   const userStr = localStorage.getItem('user');
   if (userStr) {
     try {
       authState.user = JSON.parse(userStr);
+      console.log('[AUTH] ✅ User restored:', authState.user?.email);
     } catch (e) {
       console.error('[AUTH] Failed to parse user from localStorage');
     }
