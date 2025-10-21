@@ -7,6 +7,7 @@ import { Card } from '../components/Card';
 export function Final() {
   const navigate = useNavigate();
   const [resetting, setResetting] = useState(false);
+  const [downloading, setDownloading] = useState(false);
 
   const handleReset = async () => {
     setResetting(true);
@@ -21,6 +22,33 @@ export function Final() {
       alert('Erreur lors de la réinitialisation');
     } finally {
       setResetting(false);
+    }
+  };
+
+  const handleDownloadCertificate = async () => {
+    setDownloading(true);
+    try {
+      console.log('[CERTIFICATE] Requesting certificate download');
+      const response = await api.get('/certificate', {
+        responseType: 'blob',
+      });
+
+      // Créer un lien de téléchargement
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'Vibenengineer_Certificate.pdf');
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+
+      console.log('[CERTIFICATE] Certificate downloaded successfully');
+    } catch (err) {
+      console.error('[CERTIFICATE] Error downloading certificate:', err);
+      alert('Erreur lors du téléchargement du certificat');
+    } finally {
+      setDownloading(false);
     }
   };
 
@@ -41,6 +69,19 @@ export function Final() {
           Tu as complété les 3 modules avec succès et validé tous les quiz.
           Continue à vibrer avec cette énergie !
         </p>
+
+        <div className="bg-vibeen-accent/10 border border-vibeen-accent/30 rounded-lg p-4 sm:p-6 mx-2">
+          <p className="text-sm sm:text-base text-gray-300 mb-4">
+            🎓 Télécharge ton certificat officiel Vibeenengineer !
+          </p>
+          <Button
+            onClick={handleDownloadCertificate}
+            disabled={downloading}
+            className="w-full bg-gradient-to-r from-vibeen-accent to-vibeen-purple hover:opacity-90"
+          >
+            {downloading ? '📄 Génération en cours...' : '📥 Télécharger mon certificat'}
+          </Button>
+        </div>
 
         <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center pt-2 sm:pt-4">
           <Button
