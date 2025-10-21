@@ -10,6 +10,9 @@ pnpm-debug.log*
 /dist
 /build
 /.turbo
+api/dist/
+web/dist/
+*.tsbuildinfo
 
 # Env
 .env
