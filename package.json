@@ -7,6 +7,8 @@
     "build": "npm run build:api && npm run build:web",
     "build:api": "cd api && npm install && npm run build",
     "build:web": "cd web && npm install && npm run build",
+    "prebuild": "npm run clean:soft",
+    "clean:soft": "rm -rf api/dist web/dist web/tsconfig.tsbuildinfo || true",
     "dev": "docker compose up",
     "dev:build": "docker compose up --build",
     "down": "docker compose down",
