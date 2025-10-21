@@ -37,6 +37,9 @@ export function Module() {
     }
   };
 
+  // Calculer le nombre total de modules
+  const totalModules = progress.length || 3;
+
   const handleQuizSuccess = () => {
     console.log('[QUIZ] Quiz validated, refreshing progress');
     
